@@ -36,10 +36,17 @@ def load_docs(files):
             st.warning('Please provide txt or pdf.', icon="⚠️")
     return all_text
 
+
+
+
 @st.cache_resource
 def create_retriever(_embeddings, splits, retriever_type):
     if retriever_type == "SIMILARITY SEARCH":
-        vectorstore = FAISS.from_texts(splits, _embeddings)
+        try:
+            vectorstore = FAISS.from_texts(splits, _embeddings)
+        except (IndexError, ValueError) as e:
+            st.error(f"Error creating vectorstore: {e}")
+            return
         retriever = vectorstore.as_retriever(k=5)
     elif retriever_type == "SUPPORT VECTOR MACHINES":
         retriever = SVMRetriever.from_texts(splits, _embeddings)
@@ -123,9 +130,12 @@ def main():
         """,
         unsafe_allow_html=True,
     )
+    st.sidebar.image("img/logo1.png")
 
-    st.title("RetrievalQA App")
+    st.title("PDF Analyzer")
 
+    
+    
     st.sidebar.title("Menu")
     retriever_type = st.sidebar.selectbox(
         "Choose Retriever", ["SIMILARITY SEARCH", "SUPPORT VECTOR MACHINES"])
