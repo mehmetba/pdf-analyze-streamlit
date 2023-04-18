@@ -1,9 +1,9 @@
 ![Logo](img/logo1.png "Logo")
 
 
-# PDF Analyze App
+# PDF Analyzer App
 
-PDF Analyze App is a question-answering application that allows users to upload documents (PDF or TXT) and ask questions related to the content of those documents. The app utilizes various retrievers such as similarity search and support vector machines to provide relevant answers.
+PDF Analyzer App is a question-answering application that allows users to upload documents (PDF or TXT) and ask questions related to the content of those documents. The app utilizes various retrievers such as similarity search and support vector machines to provide relevant answers.
 
 ## Features
 
