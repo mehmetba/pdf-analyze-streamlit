@@ -39,4 +39,4 @@ streamlit run app.py
 
 After running the command, you can access the app through your web browser using the provided URL.
 
-Made by Mehmet Balioglu [https://twitter.com/mehmet_ba7]
+Developed by [Mehmet Balioglu] (https://twitter.com/mehmet_ba7)
