@@ -25,11 +25,13 @@ Create a virtual environment and install the required packages:
 python -m venv venv
 source venv/bin/activate  # For Windows: venv\Scripts\activate
 pip install -r requirements.txt
+```
 
 ## Usage
 To run the app, simply execute the following command:
 
 ```bash
 streamlit run app.py
+```
 
 After running the command, you can access the app through your web browser using the provided URL.
