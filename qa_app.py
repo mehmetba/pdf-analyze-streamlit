@@ -29,8 +29,6 @@ from langchain.callbacks.base import CallbackManager
 
 st.set_page_config(page_title="RetrievalQA App")
 
-# os.environ["OPENAI_API_KEY"] = "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"
-
 @st.cache_data
 def load_docs(files):
     st.info("`Reading doc ...`")
