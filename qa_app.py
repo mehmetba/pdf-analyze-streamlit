@@ -1,33 +1,20 @@
 import os
-import json
-import time
 import pypdf
 import random
 import itertools
-import text_utils
-import pandas as pd
-import altair as alt
 import streamlit as st
 from io import StringIO
-from langchain.document_loaders import TextLoader
-from pathlib import Path
 from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.retrievers import SVMRetriever
 from langchain.chains import QAGenerationChain
-from langchain.retrievers import TFIDFRetriever
-from langchain.evaluation.qa import QAEvalChain
-from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.embeddings.openai import OpenAIEmbeddings
-from langchain.retrievers.llama_index import LlamaIndexRetriever
-from text_utils import GRADE_DOCS_PROMPT, GRADE_ANSWER_PROMPT, GRADE_DOCS_PROMPT_FAST, GRADE_ANSWER_PROMPT_FAST
-from langchain.text_splitter import RecursiveCharacterTextSplitter, CharacterTextSplitter
-
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks.base import CallbackManager
 
-st.set_page_config(page_title="RetrievalQA App")
+st.set_page_config(page_title="PDF Analyzer")
 
 @st.cache_data
 def load_docs(files):
