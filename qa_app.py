@@ -170,7 +170,7 @@ def main():
             if 'eval_set' in st.session_state:
                 del st.session_state['eval_set']
 
-        # Load and process the uploaded PDF or TXT files
+        # Load and process the uploaded PDF or TXT files.
         loaded_text = load_docs(uploaded_files)
         st.write("Documents uploaded and processed.")
 
