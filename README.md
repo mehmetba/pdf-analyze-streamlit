@@ -17,6 +17,7 @@ Clone this repository:
 ```bash
 git clone https://github.com/your_username/retrievalqa-app.git
 cd retrievalqa-app
+```
 
 Create a virtual environment and install the required packages:
 
