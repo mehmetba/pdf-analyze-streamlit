@@ -34,7 +34,7 @@ pip install -r requirements.txt
 To run the app, simply execute the following command:
 
 ```bash
-streamlit run app.py
+streamlit run qa_app.py
 ```
 
 After running the command, you can access the app through your web browser using the provided URL.
