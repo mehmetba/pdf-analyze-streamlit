@@ -14,7 +14,7 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks.base import CallbackManager
 
-st.set_page_config(page_title="PDF Analyzer")
+st.set_page_config(page_title="PDF Analyzer",page_icon=':shark:')
 
 @st.cache_data
 def load_docs(files):
@@ -67,6 +67,9 @@ def split_texts(text, chunk_size, overlap, split_method):
         chunk_size=chunk_size, chunk_overlap=overlap)
 
     splits = text_splitter.split_text(text)
+    if not splits:
+        st.error("Failed to split document")
+        st.stop()
 
     return splits
 
@@ -87,6 +90,7 @@ def generate_eval(text, N, chunk):
         try:
             qa = chain.run(b)
             eval_set.append(qa)
+            st.write("Creating Question:",i+1)
         except:
             st.warning('Error generating question %s.' % str(i+1), icon="⚠️")
     eval_set_full = list(itertools.chain.from_iterable(eval_set))
@@ -96,10 +100,32 @@ def generate_eval(text, N, chunk):
 # ...
 
 def main():
+    
+    foot = f"""
+    <div style="
+        position: fixed;
+        bottom: 0;
+        left: 30%;
+        right: 0;
+        width: 50%;
+        padding: 0px 0px;
+        text-align: center;
+    ">
+        <p>Made by <a href='https://twitter.com/mehmet_ba7'>Mehmet Balioglu</a></p>
+    </div>
+    """
+
+    st.markdown(foot, unsafe_allow_html=True)
+    
     # Add custom CSS
     st.markdown(
         """
         <style>
+        
+        #MainMenu {visibility: hidden;
+        # }
+            footer {visibility: hidden;
+            }
             .css-card {
                 border-radius: 0px;
                 padding: 30px 10px 10px 10px;
@@ -122,21 +148,46 @@ def main():
                 background-color: green;
                 }
                 
-                
-                
-                
-        
+            .css-zt5igj {left:0;
+            }
+            
+            span.css-10trblm {margin-left:0;
+            }
+            
+            div.css-1kyxreq {margin-top: -40px;
+            }
+            
+           
+       
+            
+          
+
         </style>
         """,
         unsafe_allow_html=True,
     )
     st.sidebar.image("img/logo1.png")
 
-    st.title("PDF Analyzer")
+
+   
+
+    st.write(
+    f"""
+    <div style="display: flex; align-items: center; margin-left: 0;">
+        <h1 style="display: inline-block;">PDF Analyzer</h1>
+        <sup style="margin-left:5px;font-size:small; color: green;">beta</sup>
+    </div>
+    """,
+    unsafe_allow_html=True,
+        )
+    
+    
+
 
     
     
     st.sidebar.title("Menu")
+    
     retriever_type = st.sidebar.selectbox(
         "Choose Retriever", ["SIMILARITY SEARCH", "SUPPORT VECTOR MACHINES"])
 
@@ -144,13 +195,15 @@ def main():
     splitter_type = "RecursiveCharacterTextSplitter"
 
     if 'openai_api_key' not in st.session_state:
-        openai_api_key = st.sidebar.text_input(
-            "Enter your OpenAI API key:", value="", placeholder="sk-")
+        openai_api_key = st.text_input(
+            'Please enter your OpenAI API key or [get one here](https://platform.openai.com/account/api-keys)', value="", placeholder="sk-")
         if openai_api_key:
             st.session_state.openai_api_key = openai_api_key
             os.environ["OPENAI_API_KEY"] = openai_api_key
         else:
-            st.sidebar.warning("Please enter your OpenAI API key.")
+            #warning_text = 'Please enter your OpenAI API key. Get yours from here: [link](https://platform.openai.com/account/api-keys)'
+            #warning_html = f'<span>{warning_text}</span>'
+            #st.markdown(warning_html, unsafe_allow_html=True)
             return
     else:
         os.environ["OPENAI_API_KEY"] = st.session_state.openai_api_key
