@@ -1,5 +1,5 @@
 import os
-import pypdf
+import PyPDF2
 import random
 import itertools
 import streamlit as st
@@ -23,7 +23,7 @@ def load_docs(files):
     for file_path in files:
         file_extension = os.path.splitext(file_path.name)[1]
         if file_extension == ".pdf":
-            pdf_reader = pypdf.PdfReader(file_path)
+            pdf_reader = PyPDF2.PdfReader(file_path)
             text = ""
             for page in pdf_reader.pages:
                 text += page.extract_text()
