@@ -13,6 +13,8 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks.base import CallbackManager
+from langchain.embeddings import HuggingFaceEmbeddings
+
 
 st.set_page_config(page_title="PDF Analyzer",page_icon=':shark:')
 
@@ -188,6 +190,10 @@ def main():
     
     st.sidebar.title("Menu")
     
+    embedding_option = st.sidebar.radio(
+        "Choose Embeddings", ["OpenAI Embeddings", "HuggingFace Embeddings"])
+
+    
     retriever_type = st.sidebar.selectbox(
         "Choose Retriever", ["SIMILARITY SEARCH", "SUPPORT VECTOR MACHINES"])
 
@@ -231,8 +237,15 @@ def main():
         st.write(f"Number of text chunks: {num_chunks}")
 
         # Embed using OpenAI embeddings
-        embeddings = OpenAIEmbeddings()
+            # Embed using OpenAI embeddings or HuggingFace embeddings
+        if embedding_option == "OpenAI Embeddings":
+            embeddings = OpenAIEmbeddings()
+        elif embedding_option == "HuggingFace Embeddings(takes longer)":
+            # Replace "bert-base-uncased" with the desired HuggingFace model
+            embeddings = HuggingFaceEmbeddings()
+
         retriever = create_retriever(embeddings, splits, retriever_type)
+
 
         # Initialize the RetrievalQA chain with streaming output
         callback_handler = StreamingStdOutCallbackHandler()
