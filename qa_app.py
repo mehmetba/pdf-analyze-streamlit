@@ -191,7 +191,7 @@ def main():
     st.sidebar.title("Menu")
     
     embedding_option = st.sidebar.radio(
-        "Choose Embeddings", ["OpenAI Embeddings", "HuggingFace Embeddings"])
+        "Choose Embeddings", ["OpenAI Embeddings", "HuggingFace Embeddings(takes longer)"])
 
     
     retriever_type = st.sidebar.selectbox(
