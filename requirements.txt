@@ -1,3 +1,5 @@
 langchain==0.0.144
 PyPDF2==3.0.1
 streamlit==1.21.0
+openai==0.27.0
+faiss-cpu==1.7.3
