@@ -191,7 +191,7 @@ def main():
     st.sidebar.title("Menu")
     
     embedding_option = st.sidebar.radio(
-        "Choose Embeddings", ["OpenAI Embeddings", "HuggingFace Embeddings(takes longer)"])
+        "Choose Embeddings", ["OpenAI Embeddings", "HuggingFace Embeddings(slower)"])
 
     
     retriever_type = st.sidebar.selectbox(
@@ -240,7 +240,7 @@ def main():
             # Embed using OpenAI embeddings or HuggingFace embeddings
         if embedding_option == "OpenAI Embeddings":
             embeddings = OpenAIEmbeddings()
-        elif embedding_option == "HuggingFace Embeddings(takes longer)":
+        elif embedding_option == "HuggingFace Embeddings(slower)":
             # Replace "bert-base-uncased" with the desired HuggingFace model
             embeddings = HuggingFaceEmbeddings()
 
