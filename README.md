@@ -20,7 +20,7 @@ PDF Analyzer App is a question-answering application that allows users to upload
 Clone this repository:
 
 ```bash
-git clone https://github.com/your_username/retrievalqa-app.git
+git clone https://github.com/mehmetba/pdf-analyze-streamlit.git
 cd retrievalqa-app
 ```
 
