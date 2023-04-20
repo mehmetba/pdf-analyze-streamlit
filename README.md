@@ -21,7 +21,7 @@ Clone this repository:
 
 ```bash
 git clone https://github.com/mehmetba/pdf-analyze-streamlit.git
-cd retrievalqa-app
+cd pdf-analyze-streamlit
 ```
 
 Create a virtual environment and install the required packages:
