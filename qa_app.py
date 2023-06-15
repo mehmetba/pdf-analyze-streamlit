@@ -8,6 +8,7 @@ from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.retrievers import SVMRetriever
+from langchain.callbacks import get_openai_callback
 from langchain.chains import QAGenerationChain
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -281,8 +282,11 @@ def main():
         # Question and answering
         user_question = st.text_input("Enter your question:")
         if user_question:
-            answer = qa.run(user_question)
-            st.write("Answer:", answer)
+            # Use Callback to specify how much the query will cost
+            with get_openai_callback() as cb:
+                answer = qa.run(user_question)
+                st.write("Answer:", answer)
+                st.write("Cost", cb)
 
 
 if __name__ == "__main__":
