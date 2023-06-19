@@ -16,10 +16,21 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks.base import CallbackManager
 from langchain.embeddings import HuggingFaceEmbeddings
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+#Load .ENV
+
+
+
 
 st.set_page_config(page_title="PDF Analyzer",page_icon=':shark:')
 
 # Create a new expander for your document processing messages
+
 
 
 @st.cache_data
@@ -195,7 +206,7 @@ def main():
     
     
 
-
+    openai_api_key = os.getenv("OPENAI_API_KEY")
     
     
     st.sidebar.title("Menu")
@@ -212,7 +223,7 @@ def main():
 
     if 'openai_api_key' not in st.session_state:
         openai_api_key = st.text_input(
-            'Please enter your OpenAI API key or [get one here](https://platform.openai.com/account/api-keys)', value=st.secrets("OPENAI_API_KEY"), placeholder="Enter the OpenAI API key which begins with sk-")
+            'Please enter your OpenAI API key or [get one here](https://platform.openai.com/account/api-keys)', value=openai_api_key , placeholder="Enter the OpenAI API key which begins with sk-")
         if openai_api_key:
             st.session_state.openai_api_key = openai_api_key
             os.environ["OPENAI_API_KEY"] = openai_api_key
