@@ -8,6 +8,7 @@ from langchain.vectorstores import FAISS
 from langchain.chains import RetrievalQA
 from langchain.chat_models import ChatOpenAI
 from langchain.retrievers import SVMRetriever
+from langchain.callbacks import get_openai_callback
 from langchain.chains import QAGenerationChain
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -15,14 +16,29 @@ from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.callbacks.base import CallbackManager
 from langchain.embeddings import HuggingFaceEmbeddings
 
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+#Load .ENV
+
+
+
 
 st.set_page_config(page_title="PDF Analyzer",page_icon=':shark:')
+
+# Create a new expander for your document processing messages
+
+
 
 @st.cache_data
 def load_docs(files):
     st.info("`Reading doc ...`")
     all_text = ""
-    for file_path in files:
+    progress_bar = st.progress(0)
+    for i, file_path in enumerate(files):
         file_extension = os.path.splitext(file_path.name)[1]
         if file_extension == ".pdf":
             pdf_reader = PyPDF2.PdfReader(file_path)
@@ -36,6 +52,8 @@ def load_docs(files):
             all_text += text
         else:
             st.warning('Please provide txt or pdf.', icon="⚠️")
+        progress_bar.progress((i + 1)/len(files))
+    progress_bar.progress(100)
     return all_text
 
 
@@ -88,6 +106,7 @@ def generate_eval(text, N, chunk):
     sub_sequences = [text[i:i+chunk] for i in starting_indices]
     chain = QAGenerationChain.from_llm(ChatOpenAI(temperature=0))
     eval_set = []
+    progress_bar = st.progress(0)
     for i, b in enumerate(sub_sequences):
         try:
             qa = chain.run(b)
@@ -95,6 +114,7 @@ def generate_eval(text, N, chunk):
             st.write("Creating Question:",i+1)
         except:
             st.warning('Error generating question %s.' % str(i+1), icon="⚠️")
+        progress_bar.progress((i+1) / len(sub_sequences))
     eval_set_full = list(itertools.chain.from_iterable(eval_set))
     return eval_set_full
 
@@ -113,7 +133,7 @@ def main():
         padding: 0px 0px;
         text-align: center;
     ">
-        <p>Made by <a href='https://twitter.com/mehmet_ba7'>Mehmet Balioglu</a></p>
+        <p>Made by <a href='https://twitter.com/mehmet_ba7'>Mehmet Balioglu</a> <strong>version 1.1</strong></p>
     </div>
     """
 
@@ -131,6 +151,7 @@ def main():
             .css-card {
                 border-radius: 0px;
                 padding: 30px 10px 10px 10px;
+                color: black;
                 background-color: #f8f9fa;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 margin-bottom: 10px;
@@ -185,7 +206,7 @@ def main():
     
     
 
-
+    openai_api_key = os.getenv("OPENAI_API_KEY")
     
     
     st.sidebar.title("Menu")
@@ -202,7 +223,12 @@ def main():
 
     if 'openai_api_key' not in st.session_state:
         openai_api_key = st.text_input(
-            'Please enter your OpenAI API key or [get one here](https://platform.openai.com/account/api-keys)', value="", placeholder="Enter the OpenAI API key which begins with sk-")
+            'Please enter your OpenAI API key or [get one here](https://platform.openai.com/account/api-keys)', 
+            value=openai_api_key , 
+            placeholder="Enter the OpenAI API key which begins with sk-", 
+            type="password",
+            
+            help="Get your API key from here: https://platform.openai.com/account/api-keys")
         if openai_api_key:
             st.session_state.openai_api_key = openai_api_key
             os.environ["OPENAI_API_KEY"] = openai_api_key
@@ -263,13 +289,14 @@ def main():
                 loaded_text, num_eval_questions, 3000)
 
        # Display the question-answer pairs in the sidebar with smaller text
+       
         for i, qa_pair in enumerate(st.session_state.eval_set):
             st.sidebar.markdown(
                 f"""
                 <div class="css-card">
-                <span class="card-tag">Question {i + 1}</span>
-                    <p style="font-size: 12px;">{qa_pair['question']}</p>
-                    <p style="font-size: 12px;">{qa_pair['answer']}</p>
+                <span class="card-tag" style="color: black;">Question {i + 1}</span>
+                    <p style="font-size: 12px; color: black>{qa_pair['question']}</p>
+                    <p style="font-size: 12px; color: black">{qa_pair['answer']}</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -281,8 +308,11 @@ def main():
         # Question and answering
         user_question = st.text_input("Enter your question:")
         if user_question:
-            answer = qa.run(user_question)
-            st.write("Answer:", answer)
+            # Use Callback to specify how much the query will cost
+            with get_openai_callback() as cb:
+                answer = qa.run(user_question)
+                st.write("Answer:", answer)
+                st.write("Cost", cb)
 
 
 if __name__ == "__main__":
